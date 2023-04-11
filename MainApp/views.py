@@ -10,6 +10,13 @@ class MainView(ListAPIView):
     serializer_class = ClientSerializer
 
 
+class UserSignIn(CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSignInSerializer
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
 
 
 # Create your views here.

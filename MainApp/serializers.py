@@ -8,6 +8,45 @@ class UserSerializer(ModelSerializer):
         fields = ('email',)
 
 
+class UserSignInSerializer(ModelSerializer):
+    password2 = CharField()
+
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'password', 'password2')
+
+    def save(self, *args, **kwargs):
+        user = User(
+            email=self.validated_data['email'],
+            username=self.validated_data['username'],
+        )
+        password = self.validated_data['password']
+        password2 = self.validated_data['password2']
+        if password != password2:
+            raise ValidationError({password: "Пароль не совпадает"})
+        user.set_password(password)
+        user.save()
+        return user
+
+
+class UserLogInSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'password')
+
+
+class ExecutorSignInSerializer(ModelSerializer):
+    class Meta:
+        model = Executor
+        fields = '__all__'
+
+
+class ClientSignInSerializer(ModelSerializer):
+    class Meta:
+        model = Executor
+        fields = '__all__'
+
+
 class ExecutorSerializer(ModelSerializer):
     id = UserSerializer()
 
